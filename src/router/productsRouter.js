@@ -11,6 +11,13 @@ productsRouter.use(json())
 //aca se pone la vista
 productsRouter.get('/', async (req, res) => {
     try {
+        const user = req.session['user'];
+
+        if (!user) {
+            return res.redirect('/login');
+        }
+
+
         const { limit = 10, page = 1, sort, query } = req.query;
         const pageNumber = parseInt(page, 10);
         const skip = (pageNumber - 1) * limit;
@@ -51,6 +58,7 @@ productsRouter.get('/', async (req, res) => {
         
         res.render('products', {
             status: 'success',
+            user,
             products: products,
             totalPages,
             prevPage: pageNumber - 1,
